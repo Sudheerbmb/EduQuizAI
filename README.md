@@ -80,3 +80,37 @@ This Flask web application allows users to upload PDF, DOCX, or TXT files and ge
 7.  **You can download the MCQs as a text file or a PDF file.**
 
 ## File Structure
+-   `app.py`: The main Flask application file.
+-   `templates/`: Contains the HTML templates.
+    -   `index.html`: The main page for uploading files and generating MCQs.
+    -   `results.html`: Displays the generated MCQs and download links.
+-   `uploads/`: Stores the uploaded files.
+-   `results/`: Stores the generated MCQ files (TXT and PDF).
+
+## Functionality
+
+-   **File Upload:** Users can upload PDF, DOCX, or TXT files.
+-   **Text Extraction:** The application extracts text from the uploaded files.
+-   **MCQ Generation:** The Google Gemini Pro model generates MCQs based on the extracted text.
+-   **File Saving:** The generated MCQs are saved as TXT and PDF files.
+-   **File Download:** Users can download the generated MCQ files.
+-   **Error Handling:** Basic error handling for invalid file formats and missing files.
+-   **Dynamic Question Number:** The user can specify the number of questions they want to generate.
+
+## Dependencies
+
+-   Flask: A web framework for Python.
+-   pdfplumber: For extracting text from PDF files.
+-   python-docx: For extracting text from DOCX files.
+-   google-generativeai: For interacting with the Google Gemini Pro model.
+-   werkzeug: For secure file uploads.
+-   fpdf: for creating pdf files.
+
+## Notes
+
+-   Ensure that your Google Cloud API key has access to the Gemini Pro model.
+-   The quality of the generated MCQs depends on the quality of the input text and the capabilities of the Gemini Pro model.
+-   This application is for demonstration purposes and may require further development for production use.
+-   Consider adding more robust error handling and input validation.
+-   Add more user friendly features.
+  
