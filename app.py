@@ -4,13 +4,24 @@ import pdfplumber
 import docx
 import csv
 from werkzeug.utils import secure_filename
-import google.generativeai as genai
+from groq import Groq  # pip install groq
 from fpdf import FPDF  # pip install fpdf
+from dotenv import load_dotenv  # pip install python-dotenv
 
-# Set your API key
-os.environ["GOOGLE_API_KEY"] = ""
-genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
-model = genai.GenerativeModel("models/gemini-1.5-pro")
+# Load environment variables from .env file
+load_dotenv()
+
+# Get API key from environment
+groq_api_key = os.getenv("GROQ_API_KEY")
+
+# Configure Groq client with API key from environment
+if not groq_api_key:
+    raise ValueError(
+        "GROQ_API_KEY not found. Please create a .env file in the project root with:\n"
+        "GROQ_API_KEY=your_api_key_here"
+    )
+
+client = Groq(api_key=groq_api_key)
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads/'
@@ -31,7 +42,8 @@ def extract_text_from_file(file_path):
         text = ' '.join([para.text for para in doc.paragraphs])
         return text
     elif ext == 'txt':
-        with open(file_path, 'r') as file:
+        # Read as UTF-8 to support wider character set
+        with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
             return file.read()
     return None
 
@@ -52,12 +64,26 @@ def Question_mcqs_generator(input_text, num_questions):
     D) [option D]
     Correct Answer: [correct option]
     """
-    response = model.generate_content(prompt).text.strip()
-    return response
+    response = client.chat.completions.create(
+        model="openai/gpt-oss-120b",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are an AI assistant that generates high‑quality multiple-choice questions.",
+            },
+            {
+                "role": "user",
+                "content": prompt,
+            },
+        ],
+        temperature=0.7,
+    )
+    return response.choices[0].message.content.strip()
 
 def save_mcqs_to_file(mcqs, filename):
     results_path = os.path.join(app.config['RESULTS_FOLDER'], filename)
-    with open(results_path, 'w') as f:
+    # Use UTF-8 to avoid UnicodeEncodeError on Windows (cp1252 default)
+    with open(results_path, 'w', encoding='utf-8') as f:
         f.write(mcqs)
     return results_path
 
@@ -68,7 +94,14 @@ def create_pdf(mcqs, filename):
 
     for mcq in mcqs.split("## MCQ"):
         if mcq.strip():
-            pdf.multi_cell(0, 10, mcq.strip())
+            # FPDF (classic) only supports latin-1; replace unsupported chars
+            safe_text = (
+                mcq.strip()
+                .replace("\u2011", "-")  # non-breaking hyphen -> normal hyphen
+                .encode("latin-1", "replace")
+                .decode("latin-1")
+            )
+            pdf.multi_cell(0, 10, safe_text)
             pdf.ln(5)  # Add a line break
 
     pdf_path = os.path.join(app.config['RESULTS_FOLDER'], filename)

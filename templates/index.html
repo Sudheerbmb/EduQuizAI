@@ -3,312 +3,662 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduQuizAi - MCQ Generator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
-    <script>
-        // Update the digital clock every second
-        function updateClock() {
-            const timeDisplay = document.querySelector('.digital-clock span');
-            const date = new Date();
-            let hours = date.getHours();
-            let minutes = date.getMinutes();
-            let seconds = date.getSeconds();
-            let ampm = hours >= 12 ? 'PM' : 'AM';
-
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            seconds = seconds < 10 ? '0' + seconds : seconds;
-
-            const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
-            timeDisplay.textContent = timeString;
+    <title>EduQuizAI - Intelligent MCQ Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --dark-bg: #0f0f23;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.4);
         }
 
-        // Set an interval to update the clock
-        setInterval(updateClock, 1000);
-
-        // Handle pop-up and dynamic background effects
-        window.onload = function() {
-            setTimeout(() => {
-                document.getElementById("popup").style.display = "block";
-            }, 1000);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        function closePopup() {
-            document.getElementById("popup").style.display = "none";
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: var(--dark-bg);
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(245, 87, 108, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
         }
 
-        // Dynamic color change effect for the website background
-        let colors = ["#121212", "#1a3a5b", "#0f3d47", "#4c90d7", "#c0c0c0", "#d4af37"];
-        let currentColor = 0;
-        setInterval(() => {
-            document.body.style.backgroundColor = colors[currentColor];
-            currentColor = (currentColor + 1) % colors.length;
-        }, 5000); // Change color every 5 seconds
-    </script>
+        /* Animated Background Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-100px) translateX(50px) scale(1.2);
+                opacity: 0.6;
+            }
+        }
+
+        /* Logo */
+        .logo {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            width: 70px;
+            height: 70px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+
+        /* Clock */
+        .clock {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 15px 25px;
+            z-index: 1000;
+            font-family: 'Poppins', monospace;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .clock:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Main Container */
+        .container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 20px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 50px 60px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shine {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .title h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .title p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: #667eea;
+        }
+
+        /* File Upload Area */
+        .file-upload-wrapper {
+            position: relative;
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--glass-border);
+            border-radius: 20px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-upload-area:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .file-upload-area.dragover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.15);
+            transform: scale(1.02);
+        }
+
+        .file-upload-area i {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .file-upload-text {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .file-upload-hint {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        .file-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-name {
+            margin-top: 15px;
+            color: #667eea;
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .file-name.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Number Input */
+        .number-input-wrapper {
+            position: relative;
+        }
+
+        .number-input {
+            width: 100%;
+            padding: 18px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--glass-border);
+            border-radius: 15px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .number-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .number-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .submit-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-btn span {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .spinner.active {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .card {
+                padding: 40px 30px;
+                border-radius: 25px;
+            }
+
+            .logo, .clock {
+                width: 50px;
+                height: 50px;
+                top: 15px;
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .logo {
+                left: 15px;
+            }
+
+            .clock {
+                right: 15px;
+            }
+
+            .file-upload-area {
+                padding: 30px 15px;
+            }
+
+            .file-upload-area i {
+                font-size: 2rem;
+            }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 15px 25px;
+            color: var(--text-primary);
+            box-shadow: var(--shadow-lg);
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
 </head>
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        transition: all 0.3s ease;
-    }
+<body>
+    <!-- Animated Background Particles -->
+    <div class="particles" id="particles"></div>
 
-    body {
-        font-family: 'Raleway', sans-serif;
-        color: #f1f1f1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        overflow: hidden;
-        position: relative;
-        transition: background-color 2s ease-in-out;
-    }
-
-    .container {
-        background: #c0c0c0;  /* Silver background */
-        border-radius: 12px;
-        padding: 40px 50px;
-        width: 90%;
-        max-width: 850px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        position: relative;
-        z-index: 2;
-        transition: all 0.3s ease;
-    }
-
-    h1 {
-        text-align: center;
-        color: #1a3a5b;
-        font-size: 2.4rem;
-        margin-bottom: 30px;
-        font-weight: 600;
-        text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
-        transition: color 0.3s ease-in-out;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-        position: relative;
-    }
-
-    label {
-        font-size: 1.1rem;
-        color: #4f4f4f;
-        margin-bottom: 8px;
-        font-weight: 500;
-        display: block;
-    }
-
-    input[type="file"],
-    input[type="number"] {
-        width: 100%;
-        padding: 16px 24px;
-        margin-top: 10px;
-        border: none;
-        border-radius: 15px;
-        background: #f0f4f8;
-        font-size: 1rem;
-        color: #333;
-        box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.1), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
-        transition: all 0.3s ease;
-    }
-
-    input[type="file"]:focus,
-    input[type="number"]:focus {
-        box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.2), inset -4px -4px 8px rgba(255, 255, 255, 0.5);
-        outline: none;
-        border: 2px solid #1a3a5b;
-    }
-
-    button {
-        width: 100%;
-        padding: 14px 0;
-        background-color: #1a3a5b;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        font-size: 1.2rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin-top: 20px;
-    }
-
-    button:hover {
-        background-color: #172f49;
-        transform: scale(1.05);
-    }
-
-    button:active {
-        transform: scale(0.98);
-    }
-
-    .footer {
-        text-align: center;
-        font-size: 1rem;
-        color: #1a3a5b;
-        margin-top: 30px;
-    }
-
-    .footer a {
-        color: #4c90d7;
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.3s ease;
-    }
-
-    .footer a:hover {
-        color: #1a3a5b;
-    }
-
-    .mcq {
-        background-color: #f0f4f8;
-        border-radius: 12px;
-        padding: 20px;
-        margin: 15px 0;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .mcq p {
-        font-size: 1.1rem;
-        line-height: 1.8;
-        color: #444;
-    }
-
-    /* Digital Clock Styles */
-    .digital-clock {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.5rem;  /* Reduced font size for the clock */
-    font-weight: 700;
-    color: #000;  /* Black text color */
-    background-color: #d4af37;  /* Gold background */
-    padding: 10px 15px;  /* Reduced padding */
-    border-radius: 12px;  /* Slightly smaller border radius */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Slightly reduced shadow */
-    letter-spacing: 3px;  /* Reduced letter spacing */
-    text-align: center;
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 3;
-    animation: bounce 1.5s infinite;
-}
-
-.digital-clock::before {
-    content: 'TIME';
-    font-size: 0.9rem;  /* Slightly smaller font size for 'TIME' label */
-    font-weight: 400;
-    color: #888;
-    display: block;
-    margin-bottom: 6px;  /* Reduced margin */
-}
-
-.digital-clock span {
-    font-size: 2.5rem;  /* Reduced font size for the time */
-}
-
-    @keyframes bounce {
-        0% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-        100% { transform: translateY(0); }
-    }
-
-    /* EduQuizAi logo styles */
-    .logo {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        width: 110px;  /* Increased size */
-        height: 110px;
-        background-color: #fff;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 2rem;
-        font-weight: 600;
-        color: #4c90d7;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease;
-    }
-
-    .logo img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-    }
-
-    .logo:hover {
-        transform: scale(1.1);
-    }
-
-    /* Pop-up styling */
-    #popup {
-        display: none;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #ffcc00;
-        color: #333;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        z-index: 3;
-        animation: fadeIn 1s ease-out;
-    }
-
-    #popup button {
-        background-color: #1a3a5b;
-        color: white;
-        border: none;
-        padding: 10px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    #popup button:hover {
-        background-color: #172f49;
-    }
-
-    @keyframes fadeIn {
-        0% { opacity: 0; }
-        100% { opacity: 1; }
-    }
-</style>
-<body onload="updateClock()">
-    <div class="glitter"></div>
-
-    <div class="logo">
-        <img src="logo.jpg">
+    <!-- Logo -->
+    <div class="logo" onclick="window.location.href='/'">
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="EduQuizAI">
     </div>
 
+    <!-- Clock -->
+    <div class="clock">
+        <span id="time"></span>
+    </div>
+
+    <!-- Main Container -->
     <div class="container">
-        <h1>Generate MCQs from Your Text</h1>
-        <form action="/generate" method="POST" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="file">Upload Your Document (PDF, TXT, DOCX):</label>
-                <input type="file" name="file" required>
+        <div class="card">
+            <div class="title">
+                <h1><i class="fas fa-brain"></i> EduQuizAI</h1>
+                <p>Transform your documents into intelligent multiple-choice questions</p>
             </div>
-            <div class="form-group">
-                <label for="num_questions">How Many Questions Do You Want?</label>
-                <input type="number" name="num_questions" min="1" required>
-            </div>
-            <button type="submit">Generate MCQs</button>
-        </form>
+
+            <form action="/generate" method="POST" enctype="multipart/form-data" id="mainForm">
+                <!-- File Upload -->
+                <div class="form-group">
+                    <label class="form-label" for="file">
+                        <i class="fas fa-file-upload"></i>
+                        Upload Document
+                    </label>
+                    <div class="file-upload-wrapper">
+                        <div class="file-upload-area" id="uploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <div class="file-upload-text">Drag & drop your file here</div>
+                            <div class="file-upload-hint">or click to browse</div>
+                            <div class="file-upload-hint">Supports: PDF, TXT, DOCX</div>
+                            <input type="file" name="file" id="file" class="file-input" accept=".pdf,.txt,.docx" required>
+                        </div>
+                        <div class="file-name" id="fileName"></div>
+                    </div>
+                </div>
+
+                <!-- Number of Questions -->
+                <div class="form-group">
+                    <label class="form-label" for="num_questions">
+                        <i class="fas fa-question-circle"></i>
+                        Number of Questions
+                    </label>
+                    <div class="number-input-wrapper">
+                        <input type="number" name="num_questions" id="num_questions" class="number-input" 
+                               min="1" max="50" value="5" required placeholder="Enter number of questions">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span>
+                        <span class="spinner" id="spinner"></span>
+                        <i class="fas fa-magic"></i>
+                        Generate MCQs
+                    </span>
+                </button>
+            </form>
+        </div>
     </div>
 
-    <!-- Digital Clock -->
-    <div class="digital-clock">
-        <span></span>
-    </div>
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
 
-    <!-- Pop-up -->
-    <div id="popup">
-        <p>Welcome to EduQuizAi! Start generating your MCQs.</p>
-        <button onclick="closePopup()">Close</button>
-    </div>
+    <script>
+        // Create animated particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 100 + 50;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Update clock
+        function updateClock() {
+            const timeElement = document.getElementById('time');
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            
+            hours = hours % 12 || 12;
+            hours = hours.toString().padStart(2, '0');
+            minutes = minutes.toString().padStart(2, '0');
+            seconds = seconds.toString().padStart(2, '0');
+            
+            timeElement.textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+        }
+
+        // File upload handling
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('file');
+        const fileName = document.getElementById('fileName');
+        const form = document.getElementById('mainForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const spinner = document.getElementById('spinner');
+
+        // Drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.add('dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.remove('dragover');
+            }, false);
+        });
+
+        uploadArea.addEventListener('drop', handleDrop, false);
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+            handleFiles(files);
+        }
+
+        fileInput.addEventListener('change', function() {
+            handleFiles(this.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                fileName.textContent = `✓ ${file.name}`;
+                fileName.classList.add('active');
+                uploadArea.querySelector('.file-upload-text').textContent = 'File selected';
+            }
+        }
+
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            if (!fileInput.files.length) {
+                e.preventDefault();
+                showToast('Please select a file first', 'error');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            spinner.classList.add('active');
+            submitBtn.querySelector('span').innerHTML = '<span class="spinner active"></span> Generating...';
+        });
+
+        // Toast notification
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize
+        createParticles();
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
 </body>
 </html>

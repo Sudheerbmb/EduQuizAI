@@ -1,220 +1,607 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCQ Results</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            padding: 20px;
-        }
-        .container {
-            width: 70%;
-            margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .mcq {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #e9f5ff;
-            border: 1px solid #007bff;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .mcq:hover {
-            background-color: #d1ecf1;
-        }
-        .question {
-            font-weight: bold;
-            color: #007bff;
-            margin-bottom: 10px;
-        }
-        .options {
-            margin: 10px 0;
-        }
-        .option {
-            padding: 5px;
-            margin: 5px 0;
-            border: 1px solid #007bff;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        .option:hover {
-            background-color: #cce5ff;
-        }
-        .correct-answer {
-            font-weight: bold;
-            color: green;
-            margin-top: 10px;
-        }
-        a {
-            display: inline-block;
-            padding: 10px 15px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            margin-top: 20px;
-            text-align: center;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        a:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Generated MCQs</h1>
-
-        {% for mcq in mcqs.split("## MCQ") %}
-            {% if mcq.strip() %}
-                <div class="mcq">
-                    <div class="question">{{ mcq.split('A)')[0].strip() }}</div>
-                    <div class="options">
-                        <div class="option">A) {{ mcq.split('A)')[1].split('B)')[0].strip() }}</div>
-                        <div class="option">B) {{ mcq.split('B)')[1].split('C)')[0].strip() }}</div>
-                        <div class="option">C) {{ mcq.split('C)')[1].split('D)')[0].strip() }}</div>
-                        <div class="option">D) {{ mcq.split('D)')[1].split('Correct Answer:')[0].strip() }}</div>
-                    </div>
-                    <div class="correct-answer">
-                        Correct Answer: {{ mcq.split('Correct Answer:')[1].strip() }}
-                    </div>
-                </div>
-            {% endif %}
-        {% endfor %}
-
-        <a href="/download/{{ txt_filename }}">Download as TXT</a>
-        <a href="/download/{{ pdf_filename }}">Download as PDF</a>    </div>
-</body>
-</html> -->
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCQ Results</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Generated MCQs - EduQuizAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: #fff;
-            padding: 30px;
-            text-align: center;
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --dark-bg: #0f0f23;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 30px 80px rgba(0, 0, 0, 0.4);
         }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: var(--dark-bg);
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(245, 87, 108, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* Animated Background Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-100px) translateX(50px) scale(1.2);
+                opacity: 0.6;
+            }
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            right: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+
+        .back-btn {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 12px 24px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateX(-5px);
+        }
+
+        /* Main Container */
         .container {
             max-width: 900px;
-            margin: auto;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
+            margin: 0 auto;
+            padding-top: 120px;
+            position: relative;
+            z-index: 1;
         }
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            background: -webkit-linear-gradient(45deg, #00dbde, #fc00ff);
+
+        .title-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+            animation: slideDown 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .title-card h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
         }
-        .mcq {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
-            transition: transform 0.3s ease;
-        }
-        .mcq:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.3);
-        }
-        .question {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #00dbde;
-            margin-bottom: 15px;
-        }
-        .options .option {
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            margin: 5px 0;
-            font-weight: 400;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .option:hover {
-            background: rgba(0, 255, 255, 0.5);
-        }
-        .correct-answer {
-            margin-top: 15px;
-            font-weight: 600;
-            color: #32ff7e;
+
+        .title-card p {
+            color: var(--text-secondary);
             font-size: 1.1rem;
         }
-        .download-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
+
+        /* MCQ Cards */
+        .mcq-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            animation-fill-mode: both;
+            position: relative;
+            overflow: hidden;
         }
-        .download-links a {
-            text-decoration: none;
-            background: linear-gradient(45deg, #ff416c, #ff4b2b);
-            padding: 12px 20px;
-            color: white;
-            border-radius: 8px;
+
+        .mcq-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.5s;
+        }
+
+        .mcq-card:hover::before {
+            left: 100%;
+        }
+
+        .mcq-card:nth-child(1) { animation-delay: 0.1s; }
+        .mcq-card:nth-child(2) { animation-delay: 0.2s; }
+        .mcq-card:nth-child(3) { animation-delay: 0.3s; }
+        .mcq-card:nth-child(4) { animation-delay: 0.4s; }
+        .mcq-card:nth-child(5) { animation-delay: 0.5s; }
+        .mcq-card:nth-child(n+6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mcq-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 70px rgba(102, 126, 234, 0.3);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .question {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .question::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+        }
+
+        .options {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: rgba(102, 126, 234, 0.2);
+            transition: width 0.3s ease;
+        }
+
+        .option:hover {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateX(5px);
+            color: var(--text-primary);
+        }
+
+        .option:hover::before {
+            width: 4px;
+        }
+
+        .correct-answer {
+            margin-top: 15px;
+            padding: 15px 20px;
+            background: var(--success-gradient);
+            border-radius: 12px;
             font-weight: 600;
-            box-shadow: 0 4px 10px rgba(255, 75, 75, 0.3);
-            transition: all 0.3s;
+            font-size: 1.05rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(56, 239, 125, 0.3);
+            animation: pulse 2s infinite;
         }
-        .download-links a:hover {
-            background: linear-gradient(45deg, #fc00ff, #00dbde);
-            box-shadow: 0 6px 15px rgba(255, 75, 75, 0.5);
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 8px 20px rgba(56, 239, 125, 0.3);
+            }
+            50% {
+                box-shadow: 0 8px 30px rgba(56, 239, 125, 0.5);
+            }
+        }
+
+        .correct-answer i {
+            font-size: 1.2rem;
+        }
+
+        /* Download Section */
+        .download-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 40px;
+            margin-top: 40px;
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .download-section h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .download-btn {
+            padding: 16px 32px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .download-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .download-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .download-btn i {
+            font-size: 1.2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .download-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .download-btn.txt {
+            background: var(--secondary-gradient);
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+        }
+
+        .download-btn.txt:hover {
+            box-shadow: 0 15px 40px rgba(245, 87, 108, 0.5);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                top: 15px;
+                left: 15px;
+                right: 15px;
+            }
+
+            .logo {
+                width: 50px;
+                height: 50px;
+            }
+
+            .container {
+                padding-top: 100px;
+            }
+
+            .title-card, .mcq-card, .download-section {
+                padding: 25px;
+                border-radius: 20px;
+            }
+
+            .question {
+                font-size: 1.1rem;
+            }
+
+            .download-buttons {
+                flex-direction: column;
+            }
+
+            .download-btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Animated Background Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo" onclick="window.location.href='/'">
+            <img src="{{ url_for('static', filename='logo.jpg') }}" alt="EduQuizAI">
+        </div>
+        <a href="/" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Generate More
+        </a>
+    </div>
+
+    <!-- Main Container -->
     <div class="container">
-        <h1>Generated MCQs</h1>
+        <!-- Title Card -->
+        <div class="title-card">
+            <h1><i class="fas fa-check-circle"></i> MCQs Generated!</h1>
+            <p>Your questions are ready. Review and download below.</p>
+        </div>
+
+        <!-- MCQ Cards -->
         {% for mcq in mcqs.split("## MCQ") %}
             {% if mcq.strip() %}
-                <div class="mcq">
-                    <div class="question">{{ mcq.split('A)')[0].strip() }}</div>
+                <div class="mcq-card">
+                    {% set question_text = mcq.split('A)')[0].strip() %}
+                    {% if 'Question:' in question_text %}
+                        {% set question_text = question_text.split('Question:')[1].strip() %}
+                    {% endif %}
+                    <div class="question">{{ question_text }}</div>
                     <div class="options">
-                        <div class="option">A) {{ mcq.split('A)')[1].split('B)')[0].strip() }}</div>
-                        <div class="option">B) {{ mcq.split('B)')[1].split('C)')[0].strip() }}</div>
-                        <div class="option">C) {{ mcq.split('C)')[1].split('D)')[0].strip() }}</div>
-                        <div class="option">D) {{ mcq.split('D)')[1].split('Correct Answer:')[0].strip() }}</div>
-                    </div>
-                    <div class="correct-answer">
-                        Correct Answer: {{ mcq.split('Correct Answer:')[1].strip() }}
+                        {% set parts_a = mcq.split('A)') %}
+                        {% if parts_a|length > 1 %}
+                            {% set option_a = parts_a[1].split('B)')[0].strip() if 'B)' in parts_a[1] else parts_a[1].split('Correct Answer:')[0].strip() %}
+                            <div class="option"><strong>A)</strong> {{ option_a }}</div>
+                            
+                            {% if 'B)' in mcq %}
+                                {% set parts_b = parts_a[1].split('B)') %}
+                                {% if parts_b|length > 1 %}
+                                    {% set option_b = parts_b[1].split('C)')[0].strip() if 'C)' in parts_b[1] else parts_b[1].split('Correct Answer:')[0].strip() %}
+                                    <div class="option"><strong>B)</strong> {{ option_b }}</div>
+                                    
+                                    {% if 'C)' in mcq %}
+                                        {% set parts_c = parts_b[1].split('C)') %}
+                                        {% if parts_c|length > 1 %}
+                                            {% set option_c = parts_c[1].split('D)')[0].strip() if 'D)' in parts_c[1] else parts_c[1].split('Correct Answer:')[0].strip() %}
+                                            <div class="option"><strong>C)</strong> {{ option_c }}</div>
+                                            
+                                            {% if 'D)' in mcq %}
+                                                {% set parts_d = parts_c[1].split('D)') %}
+                                                {% if parts_d|length > 1 %}
+                                                    {% set option_d = parts_d[1].split('Correct Answer:')[0].strip() %}
+                                                    <div class="option"><strong>D)</strong> {{ option_d }}</div>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                            
+                            {% if 'Correct Answer:' in mcq %}
+                                {% set correct_answer = mcq.split('Correct Answer:')[1].strip() %}
+                                <div class="correct-answer">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Correct Answer: {{ correct_answer }}</span>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="option">{{ mcq|safe }}</div>
+                        {% endif %}
                     </div>
                 </div>
             {% endif %}
         {% endfor %}
 
-        <div class="download-links">
-            <a href="/download/{{ txt_filename }}">Download as TXT</a>
-            <a href="/download/{{ pdf_filename }}">Download as PDF</a>
+        <!-- Download Section -->
+        <div class="download-section">
+            <h2><i class="fas fa-download"></i> Download Your MCQs</h2>
+            <div class="download-buttons">
+                <a href="/download/{{ txt_filename }}" class="download-btn txt">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Download as TXT</span>
+                </a>
+                <a href="/download/{{ pdf_filename }}" class="download-btn">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Download as PDF</span>
+                </a>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Create animated particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 100 + 50;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Smooth scroll to top on load
+        window.addEventListener('load', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Initialize
+        createParticles();
+
+        // Add intersection observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.mcq-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
 </body>
 </html>
